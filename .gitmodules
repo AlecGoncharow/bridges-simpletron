@@ -1,0 +1,6 @@
+[submodule "include/bridges-cxx"]
+	path = include/bridges-cxx
+	url = https://github.com/krs-world/bridges-cxx.git
+[submodule "include/rapidjson"]
+	path = include/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
