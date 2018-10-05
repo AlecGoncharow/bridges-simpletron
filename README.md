@@ -1,5 +1,5 @@
 # bridges-cxx-project-quickstart
-This is an example/scafollded bridges project directory
+This is an example/scafollded bridges project directory for [bridges](http://bridgesuncc.github.io/)
 
 To fully pull this repo, you need to also pull the submodules with:  
 `git submodule init`  
