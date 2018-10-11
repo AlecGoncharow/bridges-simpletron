@@ -7,7 +7,7 @@ To fully pull this repo, you need to also pull the submodules with:
 
 To build, you need to generate the Makefile with cmake:  
 `cmake CMakeLists.txt`  
-And othen:  
+And then:  
 `make`
 
 Your compiled code should show up in your `./bin` directory
