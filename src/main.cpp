@@ -1,18 +1,24 @@
-/**
- */
+//
+// CS2024 -- Assignment 4
+// Exercise 8.19, Deitel & Deitel's "Visual C++ 2008: How to Program"
+// main function that creates a Simpletron
+//
 
-#include "Bridges.h"
-#include "Array.h"
-#include "DataSource.h"
+#include <iostream>
+#include <string>
+#include "SimpletronH.h"
 
-using namespace bridges;
+using namespace std;
 
-int main () {
-
-	Bridges::initialize(1, "YOUR_USER_NAME", "YOUR_API_KEY");
-
-	Array<int> *a = new Array<int>(10);
-
-	Bridges::setDataStructure(a);
-	Bridges::visualize();
+// Main method to begin inputing and executing code. 
+int main (int argc, char *argv[]) 
+{
+	Simpletron comp = Simpletron();
+	
+	comp.enterSML();
+	comp.execute();
+	
+	//system("Pause");
+	//system("read");
+	cin.get();
 }
