@@ -1,4 +1,4 @@
-# bridges-cxx-project-quickstart
+# bridges-simpletron
 This is an example/scaffolded bridges project directory for [bridges](http://bridgesuncc.github.io/)
 
 To fully pull this repo, you need to also pull the submodules with:  
