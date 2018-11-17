@@ -6,6 +6,9 @@
 
 #include <iostream>
 
+#include <Bridges.h>
+#include <SymbolCollection.h>
+
 using namespace std;
 
 const int READ = 10;
@@ -21,24 +24,26 @@ const int BRANCHNEG = 41;
 const int BRANCHZERO = 42;
 const int HALT = 43;
 
-// The main class header for the Simpletron class. 
+// The main class header for the Simpletron class.
 class Simpletron
 {
 public:
 	// declares the public functions
 	Simpletron();
 	void enterSML();
-	void execute();
+	void execute(bridges::Bridges* br);
 	void SML();
+	bridges::SymbolCollection* getState();
+
 
 private:
 	// declares the member variables
 	void error(string);
 	void printmem();
-	int* memory;
 	int accumulator;
 	int instructionCounter;
 	int operationCode;
 	int operand;
 	int instructionRegister;
+	int memory[100];
 };

@@ -10,15 +10,19 @@
 #include <string>
 #include "SimpletronH.h"
 
+#include "Bridges.h"
+#include "DataSource.h"
+#include "SymbolCollection.h"
+#include "Symbol.h"
+
 using namespace std;
 /**
  **Constructor used to initialize an instance of Simpletron.
  **/
 Simpletron::Simpletron() {
-	memory = new int[100];
 	for (int i=0; i<100; i++){
 		memory[i]=0;
-	} 
+	}
 	accumulator = 0;
 	instructionCounter = 0;
 	operationCode = 0;
@@ -27,7 +31,7 @@ Simpletron::Simpletron() {
 }
 
 /** The method that will begin taking input from the user and storing it in memory.
- ** It will stop taking input if the user inputs -99999 or if the memory is full. 
+ ** It will stop taking input if the user inputs -99999 or if the memory is full.
  **/
 void Simpletron::enterSML() {
 	int	instructionNum = 0;			// index in memory
@@ -42,22 +46,22 @@ void Simpletron::enterSML() {
 	cout << "*** Type the sentinel -99999 to stop entering ***" << endl;
 	cout << "*** your program. ***" << endl;
 
-	// The input loop to take in instructions and store them in memory. 
+	// The input loop to take in instructions and store them in memory.
 	while(instructionNum < 100) {
-		// Reading of the input. 
+		// Reading of the input.
 		if (instructionNum < 10){
 			cout << 0;
 		}
 		cout << instructionNum << " ? ";
-		cin >> input;		
-		// Input is invalid. Prompt user again. 
+		cin >> input;
+		// Input is invalid. Prompt user again.
 		while ((input < -9999 && input != -99999) || input > 9999){
 			cout << "User input invalid. Please try again." << endl;
 			if (instructionNum < 10){
 				cout << 0;
 			}
 			cout << instructionNum << " ? ";
-			cin >> input;		
+			cin >> input;
 		}
 		if (input == -99999){
 			break;
@@ -75,19 +79,59 @@ void Simpletron::enterSML() {
 
 /**
  ** The function starts executing the instructions stored in the memory
- ** by copying the instruction in memory to the instruction register. 
+ ** by copying the instruction in memory to the instruction register.
  **/
-void Simpletron::execute() {
+void Simpletron::execute(bridges::Bridges* br) {
 	while (instructionCounter < 100) {
 		instructionRegister = memory[instructionCounter];
+		auto state = getState();
+		br->setDataStructure(state);
+		br->visualize();
 		SML();
 	}
 }
 
+bridges::SymbolCollection* Simpletron::getState() {
+	auto state = new bridges::SymbolCollection();
+	auto rect = new bridges::Symbol("rectangle");
+	auto label = new bridges::Symbol("label");
+	auto rect_height = 25;
+	auto rect_width = 50;
+	auto locX = 0;
+	auto locY = 0;
+	auto mem_loc = 0;
+
+	rect->setSize(rect_width, rect_height);
+	label->setSize(rect_width, rect_height);
+	label->setLocation(locX, locY);
+	rect->setLocation(locX, locY);
+
+	label->setLabel(to_string(accumulator));
+	state->addSymbol(label);
+	
+
+	/*
+	for (auto current = std::begin(memory), end = std::end(memory); current != end; ++current, ++mem_loc) {
+		label->setLabel(to_string(mem_loc));
+		state->addSymbol(label);
+		label->setLocation(locX + rect_width, locY + rect_height);
+		rect->setLocation(locX + rect_width, locY + rect_height);
+		label->setLabel(to_string(*current));
+		state->addSymbol(rect);
+		state->addSymbol(label);
+		cout << rect->getSymbolRepresentation() << endl;
+		cout << rect->getSymbolRepresentation() << endl;
+		locY += rect_height;
+	}
+	*/
+
+	return state;
+}
+
 /**
- ** The main execution function. This function takes the instruction and 
- ** splits it into operand and opcode. The Simpletron will then execute the 
- ** instruction specified by the opcode on the operand. 
+ ** The main execution function. This function takes the instruction and
+ ** splits it into operand and opcode. The Simpletron will then execute the
+ ** instruction specified by the opcode on the operand.
  **/
 void Simpletron::SML() {
 	int tmp;
@@ -96,7 +140,7 @@ void Simpletron::SML() {
 	operand = instructionRegister%100;
 	++instructionCounter;
 
-	// The switch statement that executes commands based on the opcode. 
+	// The switch statement that executes commands based on the opcode.
 	switch (operationCode)
 	{
 		case READ:
@@ -107,7 +151,7 @@ void Simpletron::SML() {
 				cin >> tmp;
 			}
 			memory[operand] = tmp;
-			break; 
+			break;
 		case WRITE:
 			cout << memory[operand] << endl;
 			break;
@@ -172,7 +216,7 @@ void Simpletron::SML() {
 
 }
 
-// Simpletron's print memory function to print out everything in the registers and memory. 
+// Simpletron's print memory function to print out everything in the registers and memory.
 void Simpletron::printmem(){
 	cout << "REGISTERS:" << endl;
 	cout << "accumulator:             " << showpos << setw(5) << setfill('0') << internal << accumulator << endl;
@@ -199,8 +243,8 @@ void Simpletron::printmem(){
 }
 
 
-// The error method. The type of error is passed into the error function as a string to 
-// identify what type of error has occured. 
+// The error method. The type of error is passed into the error function as a string to
+// identify what type of error has occured.
 void Simpletron::error(string s){
 	if (s.compare("overflow") == 0){
 		cout << "An overflow error has occured. The program will now exit..." << endl;
