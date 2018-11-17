@@ -26,7 +26,15 @@ int main (int argc, char *argv[])
 
 	br->initialize(1, user_name, api_key);
 	br->setServer("clone");
+<<<<<<< HEAD
 	br->setVisualizeJSONFlag(true);
+=======
+
+	auto sl = new bridges::SymbolCollection();
+	sl->addSymbol(new bridges::Symbol("circle"));
+	br->setDataStructure(sl);
+	br->visualize();
+>>>>>>> 6a1a6ebd7fb74371f0f72c45bebbf52905429ad9
 
 	try {
 	Simpletron comp = Simpletron();

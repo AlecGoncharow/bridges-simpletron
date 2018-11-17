@@ -100,11 +100,8 @@ bridges::SymbolCollection* Simpletron::getState() {
 	auto locX = 0;
 	auto locY = 0;
 
-	rect->setSize(rect_width, rect_height);
-	//label->setSize(rect_width, rect_height);
-	label->setLocation(locX, locY);
-	rect->setLocation(locX, locY);
-	label->setFontSize(50);
+
+	
 
 	auto mem_loc = 0;
 	for (auto current = std::begin(memory), end = std::end(memory); current != end; ++current, ++mem_loc) {
@@ -117,7 +114,6 @@ bridges::SymbolCollection* Simpletron::getState() {
 		state->addSymbol(label);
 		locY += rect_height;
 	}
-
 	return state;
 }
 
