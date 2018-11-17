@@ -95,35 +95,28 @@ bridges::SymbolCollection* Simpletron::getState() {
 	auto state = new bridges::SymbolCollection();
 	auto rect = new bridges::Symbol("rectangle");
 	auto label = new bridges::Symbol("label");
-	auto rect_height = 25;
-	auto rect_width = 50;
+	auto rect_height = 10;
+	auto rect_width = 15;
 	auto locX = 0;
 	auto locY = 0;
-	auto mem_loc = 0;
 
 	rect->setSize(rect_width, rect_height);
-	label->setSize(rect_width, rect_height);
+	//label->setSize(rect_width, rect_height);
 	label->setLocation(locX, locY);
 	rect->setLocation(locX, locY);
+	label->setFontSize(50);
 
-	label->setLabel(to_string(accumulator));
-	state->addSymbol(label);
-	
-
-	/*
+	auto mem_loc = 0;
 	for (auto current = std::begin(memory), end = std::end(memory); current != end; ++current, ++mem_loc) {
 		label->setLabel(to_string(mem_loc));
 		state->addSymbol(label);
 		label->setLocation(locX + rect_width, locY + rect_height);
 		rect->setLocation(locX + rect_width, locY + rect_height);
 		label->setLabel(to_string(*current));
-		state->addSymbol(rect);
+		//state->addSymbol(rect);
 		state->addSymbol(label);
-		cout << rect->getSymbolRepresentation() << endl;
-		cout << rect->getSymbolRepresentation() << endl;
 		locY += rect_height;
 	}
-	*/
 
 	return state;
 }
