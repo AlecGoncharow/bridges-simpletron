@@ -24,6 +24,8 @@ const int BRANCHNEG = 41;
 const int BRANCHZERO = 42;
 const int HALT = 43;
 
+const int SIZE = 16;
+
 // The main class header for the Simpletron class.
 class Simpletron
 {
@@ -45,5 +47,5 @@ private:
 	int operationCode;
 	int operand;
 	int instructionRegister;
-	int memory[100];
+	int memory[SIZE];
 };

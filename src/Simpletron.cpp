@@ -14,13 +14,14 @@
 #include "DataSource.h"
 #include "SymbolCollection.h"
 #include "Symbol.h"
+#include "Color.h"
 
 using namespace std;
 /**
  **Constructor used to initialize an instance of Simpletron.
  **/
 Simpletron::Simpletron() {
-	for (int i=0; i<100; i++){
+	for (int i = 0; i < SIZE; i++){
 		memory[i]=0;
 	}
 	accumulator = 0;
@@ -47,7 +48,7 @@ void Simpletron::enterSML() {
 	cout << "*** your program. ***" << endl;
 
 	// The input loop to take in instructions and store them in memory.
-	while(instructionNum < 100) {
+	while(instructionNum < SIZE) {
 		// Reading of the input.
 		if (instructionNum < 10){
 			cout << 0;
@@ -74,7 +75,7 @@ void Simpletron::enterSML() {
 
 	// Display status messages.
 	cout << "*** Program loading completed ***" << endl;
-	cout << "*** Program execution begins ***" << endl;
+	cout << "*** Program execution `begins ***" << endl;
 }
 
 /**
@@ -82,38 +83,113 @@ void Simpletron::enterSML() {
  ** by copying the instruction in memory to the instruction register.
  **/
 void Simpletron::execute(bridges::Bridges* br) {
-	while (instructionCounter < 100) {
-		instructionRegister = memory[instructionCounter];
+    int pos = 0;
+	while (instructionCounter < SIZE) {
 		auto state = getState();
 		br->setDataStructure(state);
 		br->visualize();
+		pos = instructionCounter;
+
+		instructionRegister = memory[instructionCounter];
 		SML();
 	}
+	instructionCounter = pos;
+	auto state = getState();
+	br->setDataStructure(state);
+	br->visualize();
 }
 
 bridges::SymbolCollection* Simpletron::getState() {
 	auto state = new bridges::SymbolCollection();
 	auto rect = new bridges::Symbol("rectangle");
 	auto label = new bridges::Symbol("label");
+	auto label_mem = new bridges::Symbol("label");
+	auto mem_color = new bridges::Color("blue");
+	auto label_loc = new bridges::Symbol("label");
+	mem_color->setAlpha(1);
+
 	auto rect_height = 10;
 	auto rect_width = 15;
 	auto locX = 0;
-	auto locY = 0;
-
-
-	
-
+	auto locY = 60;
+	label->setSize(rect_width, rect_height);
+	label_mem->setSize(rect_width, rect_height);
+	label_loc->setSize(rect_width, rect_height);
+	label_loc->setLabel("Current Position");
+	rect->setColor(*mem_color);
 	auto mem_loc = 0;
+
+	label->setLabel("Memory");
+	label->setLocation(locX + rect_width, locY);
+	state->addSymbol(label);
+	locY -= rect_height;
+
+	// draw memory
 	for (auto current = std::begin(memory), end = std::end(memory); current != end; ++current, ++mem_loc) {
 		label->setLabel(to_string(mem_loc));
+		label->setLocation(locX, locY);
 		state->addSymbol(label);
-		label->setLocation(locX + rect_width, locY + rect_height);
-		rect->setLocation(locX + rect_width, locY + rect_height);
-		label->setLabel(to_string(*current));
-		//state->addSymbol(rect);
-		state->addSymbol(label);
-		locY += rect_height;
+		label_mem->setLocation(locX + rect_width, locY);
+		label_mem->setLabel(to_string(*current));
+		state->addSymbol(label_mem);
+		if (mem_loc == instructionCounter) {
+				label_loc->setLocation(locX + 2 * rect_width, locY);
+				state->addSymbol(label_loc);
+		}
+		locY -= rect_height;
 	}
+
+	locX = -50;
+	locY =  0;
+	label->setLabel("accumulator");
+	label->setLocation(locX, locY);
+	state->addSymbol(label);
+
+	label->setLabel(to_string(accumulator));
+	label->setLocation(locX + rect_width, locY);
+	state->addSymbol(label);
+
+	locY += rect_height;
+
+	label->setLabel("instructionCounter");
+	label->setLocation(locX, locY);
+	state->addSymbol(label);
+
+	label->setLabel(to_string(instructionCounter));
+	label->setLocation(locX + rect_width, locY);
+	state->addSymbol(label);
+
+	locY += rect_height;
+
+	label->setLabel("operationCode");
+	label->setLocation(locX, locY);
+	state->addSymbol(label);
+
+	label->setLabel(to_string(operationCode));
+	label->setLocation(locX + rect_width, locY);
+	state->addSymbol(label);
+
+	locY += rect_height;
+
+	label->setLabel("operand");
+	label->setLocation(locX, locY);
+	state->addSymbol(label);
+
+	label->setLabel(to_string(operand));
+	label->setLocation(locX + rect_width, locY);
+	state->addSymbol(label);
+
+	locY += rect_height;
+
+	label->setLabel("instructionRegister");
+	label->setLocation(locX, locY);
+	state->addSymbol(label);
+
+	label->setLabel(to_string(instructionRegister));
+	label->setLocation(locX + rect_width, locY);
+	state->addSymbol(label);
+
+
 	return state;
 }
 
@@ -197,7 +273,7 @@ void Simpletron::SML() {
 		case HALT:
 			cout << "*** Simpletron execution terminated ***" << endl;
 			printmem();
-			instructionCounter=100;		// set to end of the array to stop executing
+			instructionCounter=SIZE;		// set to end of the array to stop executing
 			break;
 		default:
 			cout << "Invalid input";
