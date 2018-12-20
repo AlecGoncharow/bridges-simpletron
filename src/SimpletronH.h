@@ -35,7 +35,7 @@ public:
 	void enterSML();
 	void execute(bridges::Bridges* br);
 	void SML();
-	bridges::SymbolCollection* getState();
+	bridges::SymbolCollection* getState(int pos);
 
 
 private:

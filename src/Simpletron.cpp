@@ -84,27 +84,26 @@ void Simpletron::enterSML() {
  **/
 void Simpletron::execute(bridges::Bridges* br) {
     int pos = 0;
-	while (instructionCounter < SIZE) {
-		auto state = getState();
-		br->setDataStructure(state);
-		br->visualize();
-		pos = instructionCounter;
-
-		instructionRegister = memory[instructionCounter];
-		SML();
-	}
-	instructionCounter = pos;
-	auto state = getState();
+	auto state = getState(-1);
 	br->setDataStructure(state);
 	br->visualize();
+	while (instructionCounter < SIZE) {
+		pos = instructionCounter;
+		instructionRegister = memory[instructionCounter];
+		SML();
+		state = getState(pos);
+		br->setDataStructure(state);
+		br->visualize();
+	}
 }
 
-bridges::SymbolCollection* Simpletron::getState() {
+bridges::SymbolCollection* Simpletron::getState(int pos) {
 	auto state = new bridges::SymbolCollection();
 	auto rect = new bridges::Symbol("rectangle");
 	auto label = new bridges::Symbol("label");
 	auto label_mem = new bridges::Symbol("label");
 	auto mem_color = new bridges::Color("blue");
+	auto non_curr_color = new bridges::Color("black");
 	auto label_loc = new bridges::Symbol("label");
 	mem_color->setAlpha(1);
 
@@ -124,33 +123,78 @@ bridges::SymbolCollection* Simpletron::getState() {
 	state->addSymbol(label);
 	locY -= rect_height;
 
+	string instruction = "0000";
+
 	// draw memory
 	for (auto current = std::begin(memory), end = std::end(memory); current != end; ++current, ++mem_loc) {
 		label->setLabel(to_string(mem_loc));
 		label->setLocation(locX, locY);
 		state->addSymbol(label);
 		label_mem->setLocation(locX + rect_width, locY);
-		label_mem->setLabel(to_string(*current));
-		state->addSymbol(label_mem);
-		if (mem_loc == instructionCounter) {
+		if (mem_loc == pos) {
 				label_loc->setLocation(locX + 2 * rect_width, locY);
 				state->addSymbol(label_loc);
+
+				label_mem->setColor(*mem_color);
+				instruction = to_string(*current);
+				label_mem->setLabel(instruction);
+
+		} else {
+				label_mem->setColor(*non_curr_color);
+				if (*current == 0) {
+						label_mem->setLabel("0000");
+				} else {
+						label_mem->setLabel(to_string(*current));
+				}
 		}
+		state->addSymbol(label_mem);
 		locY -= rect_height;
+	}
+
+	string op = "00";
+	string opan = "00";
+	if (pos != -1) {
+		op = instruction.substr(0, 2);
+		opan = instruction.substr(2, 2);
 	}
 
 	locX = -50;
 	locY =  0;
-	label->setLabel("accumulator");
+
+	label->setColor(*non_curr_color);
+	label->setLabel("operand");
 	label->setLocation(locX, locY);
 	state->addSymbol(label);
 
-	label->setLabel(to_string(accumulator));
+	label->setColor(*mem_color);
+	label->setLabel(opan);
 	label->setLocation(locX + rect_width, locY);
 	state->addSymbol(label);
-
 	locY += rect_height;
 
+	label->setColor(*non_curr_color);
+	label->setLabel("operationCode");
+	label->setLocation(locX, locY);
+	state->addSymbol(label);
+
+	label->setColor(*mem_color);
+	label->setLabel(op);
+	label->setLocation(locX + rect_width, locY);
+	state->addSymbol(label);
+	locY += rect_height;
+
+	label->setColor(*non_curr_color);
+	label->setLabel("instructionRegister");
+	label->setLocation(locX, locY);
+	state->addSymbol(label);
+
+	label->setColor(*mem_color);
+	label->setLabel(instruction);
+	label->setLocation(locX + rect_width, locY);
+	state->addSymbol(label);
+	locY += rect_height;
+
+	label->setColor(*non_curr_color);
 	label->setLabel("instructionCounter");
 	label->setLocation(locX, locY);
 	state->addSymbol(label);
@@ -158,34 +202,14 @@ bridges::SymbolCollection* Simpletron::getState() {
 	label->setLabel(to_string(instructionCounter));
 	label->setLocation(locX + rect_width, locY);
 	state->addSymbol(label);
-
 	locY += rect_height;
 
-	label->setLabel("operationCode");
+	label->setColor(*non_curr_color);
+	label->setLabel("accumulator");
 	label->setLocation(locX, locY);
 	state->addSymbol(label);
 
-	label->setLabel(to_string(operationCode));
-	label->setLocation(locX + rect_width, locY);
-	state->addSymbol(label);
-
-	locY += rect_height;
-
-	label->setLabel("operand");
-	label->setLocation(locX, locY);
-	state->addSymbol(label);
-
-	label->setLabel(to_string(operand));
-	label->setLocation(locX + rect_width, locY);
-	state->addSymbol(label);
-
-	locY += rect_height;
-
-	label->setLabel("instructionRegister");
-	label->setLocation(locX, locY);
-	state->addSymbol(label);
-
-	label->setLabel(to_string(instructionRegister));
+	label->setLabel(to_string(accumulator));
 	label->setLocation(locX + rect_width, locY);
 	state->addSymbol(label);
 
