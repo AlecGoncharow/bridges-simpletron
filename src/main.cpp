@@ -21,10 +21,13 @@ int main (int argc, char *argv[])
 {
 	string user_name;
 	string api_key;
-	if (argc > 2) {
-		user_name = argv[1];
-		api_key = argv[2];
-
+	int assignment = 1;
+	if (argc > 1) {
+		assignment = std::stoi(argv[1]);
+	}
+	if (argc > 3) {
+		user_name = argv[2];
+		api_key = argv[3];
 	} else {
 		user_name = std::getenv("BRIDGES_USER_NAME");
 		api_key = std::getenv("BRIDGES_API_KEY");
@@ -33,7 +36,7 @@ int main (int argc, char *argv[])
 
 	auto br = new bridges::Bridges();
 
-	br->initialize(1, user_name, api_key);
+	br->initialize(assignment, user_name, api_key);
 	br->setServer("clone");
 	br->setVisualizeJSONFlag(false);
 
