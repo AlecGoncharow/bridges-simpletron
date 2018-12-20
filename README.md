@@ -11,4 +11,4 @@ And then:
 Your compiled code should show up in your `./bin` directory.
 
 You will need to have `BRIDGES_USER_NAME` and `BRIDGES_API_KEY` set in your `env`, otherwise you can pass
-your BRIDGES user name and API key as args to the binary respectively.
+your BRIDGES assignment number, user name, and API key as args to the binary respectively.
